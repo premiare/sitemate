@@ -6,7 +6,7 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-const apiUrl = "http://localhost:3000";
+const apiUrl = "http://localhost:3000/api/v1";
 
 interface Issue {
   id: number;
@@ -16,7 +16,6 @@ interface Issue {
 
 const createIssue = () => {
   rl.question("Enter issue title: ", (title) => {
-    console.log(title);
     rl.question("Enter issue description: ", (description) => {
       axios
         .post<Issue>(`${apiUrl}/create`, { title, description })

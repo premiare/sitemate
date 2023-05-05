@@ -1,5 +1,7 @@
 # Sitemate Coding Challenge - 5/5/2023
 
+---
+
 ## How to run the code
 
 ---
@@ -19,6 +21,8 @@ cd app
 npm install
 npm start
 ```
+
+---
 
 ## Endpoints (Server)
 
@@ -43,3 +47,11 @@ Updates an existing issue
 ### DELETE /delete/:id (Delete Issue)
 
 Deletes an existing issue
+
+---
+
+## Tests (Server / API)
+
+---
+
+To run tests, run `npm test` in the server directory

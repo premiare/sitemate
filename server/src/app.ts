@@ -2,13 +2,19 @@ import express, { Application, NextFunction, Request, Response } from "express";
 import issues from "./@data/issues.json";
 import bodyParser from "body-parser";
 
-const app: Application = express();
+export const app: Application = express();
+
+const PORT = 3000;
 
 type IssueType = {
   id: number;
   title: string;
   description: string;
 };
+
+app.get("/", (req: Request, res: Response) => {
+  res.status(200).send("Hello World!");
+});
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   console.log(`[${new Date().toLocaleDateString()}] ${req.method} ${req.path}`);
@@ -18,14 +24,14 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get("/view/all", (req: Request, res: Response) => {
+app.get("/api/v1/view/all", (req: Request, res: Response) => {
   res.send(issues);
 });
 
 // READ
-app.get("/view/:id", (req: Request, res: Response) => {
+app.get("/api/v1/view/:id", (req: Request, res: Response) => {
   if (req.method !== "GET") {
-    res.status(400).send(`Please use GET method to view an issue`);
+    res.status(405).send(`Please use GET method to view an issue`);
   }
   const id = Number(req.params.id);
 
@@ -40,9 +46,9 @@ app.get("/view/:id", (req: Request, res: Response) => {
 });
 
 // CREATE
-app.post("/create", (req: Request, res: Response) => {
+app.post("/api/v1/create", (req: Request, res: Response) => {
   if (req.method !== "POST") {
-    res.status(400).send(`Please use POST method to create an issue`);
+    res.status(405).send(`Please use POST method to create an issue`);
   }
 
   console.log(req.body);
@@ -69,9 +75,9 @@ app.post("/create", (req: Request, res: Response) => {
   res.send(newIssue);
 });
 
-app.put("/update/:id", (req: Request, res: Response) => {
+app.put("/api/v1/update/:id", (req: Request, res: Response) => {
   if (req.method !== "PUT") {
-    res.status(400).send(`Please use PUT method to update the issue`);
+    res.status(405).send(`Please use PUT method to update the issue`);
   }
 
   const id = Number(req.params.id);
@@ -84,7 +90,6 @@ app.put("/update/:id", (req: Request, res: Response) => {
   }
 
   const { title, description } = req.body;
-
   // checking for titles & descriptions to update the issue
   if (!title) {
     res.status(400).send(`Please provide a title to update the issue`);
@@ -101,7 +106,7 @@ app.put("/update/:id", (req: Request, res: Response) => {
   res.send(issue);
 });
 
-app.post("/delete/:id", (req: Request, res: Response) => {
+app.post("/api/v1/delete/:id", (req: Request, res: Response) => {
   const id = Number(req.params.id);
   const issue = issues.find((issue: IssueType) => issue.id === id);
 
@@ -115,12 +120,9 @@ app.post("/delete/:id", (req: Request, res: Response) => {
     issues.splice(issues.indexOf(issue), 1);
   }
   // Return the deleted issue object
-  res.send({
-    message: `Issue with ID ${id} has been deleted`,
-    issue,
-  });
+  res.send(`Issue with ID ${id} has been deleted`);
 });
 
 app.listen(3000, () => {
-  console.log("Server listening on port 3000");
+  console.log(`Server listening on port ${PORT}`);
 });
