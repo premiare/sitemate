@@ -65,7 +65,7 @@ const viewAllIssues = () => {
 const deleteIssue = () => {
   rl.question("Enter issue ID: ", (id) => {
     axios
-      .delete(`${apiUrl}/delete/${id}`)
+      .post(`${apiUrl}/delete/${id}`)
       .then((response) => {
         console.log("Issue deleted");
         console.log(response.data);
