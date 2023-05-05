@@ -18,12 +18,8 @@ const createIssue = () => {
   rl.question("Enter issue title: ", (title) => {
     console.log(title);
     rl.question("Enter issue description: ", (description) => {
-      const issue = {
-        title: title,
-        description: description,
-      };
       axios
-        .post<Issue>(`${apiUrl}/create`, issue)
+        .post<Issue>(`${apiUrl}/create`, { title, description })
         .then((response) => {
           console.log("New issue created:");
           console.log(response.data);
@@ -83,9 +79,29 @@ const deleteIssue = () => {
   });
 };
 
+const updateIssue = () => {
+  rl.question("Enter the issue ID you want to update: ", (id) => {
+    rl.question("Enter the new title: ", (title) => {
+      rl.question("Enter the new description: ", (description) => {
+        axios
+          .put<Issue>(`${apiUrl}/update/${id}`, { title, description })
+          .then((response) => {
+            console.log("Issue updated:");
+            console.log(response.data);
+            menu();
+          })
+          .catch((error: AxiosError) => {
+            console.log("Error updating issue:", error.message);
+            menu();
+          });
+      });
+    });
+  });
+};
+
 const menu = () => {
   rl.question(
-    "Select an action:\n1. Create an issue\n2. View an issue\n3. List all issues\n4. Delete an issue\n",
+    "Select an action:\n1. Create an issue\n2. View an issue\n3. Update an issue\n4. Delete an issue\n5. View all issues\n",
     (answer) => {
       switch (answer) {
         case "1":
@@ -95,10 +111,13 @@ const menu = () => {
           viewIssue();
           break;
         case "3":
-          viewAllIssues();
+          updateIssue();
           break;
         case "4":
           deleteIssue();
+          break;
+        case "5":
+          viewAllIssues();
           break;
         default:
           console.log("Invalid option selected");
